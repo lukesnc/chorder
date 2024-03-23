@@ -6,7 +6,7 @@ use midir::MidiInput;
 const MIDI_NOTE_ON: u8 = 144;
 const MIDI_NOTE_OFF: u8 = 128;
 
-const CHORDS: [(&str, &[u8]); 24] = [
+const CHORDS: [(&str, &[u8]); 29] = [
     ("M", &[0, 4, 7]),                 // Major
     ("maj7", &[0, 4, 11]),             // Major 7th
     ("maj7", &[0, 4, 7, 11]),          // Major 7th
@@ -25,12 +25,17 @@ const CHORDS: [(&str, &[u8]); 24] = [
     ("m", &[0, 3, 7]),                 // Minor
     ("m7", &[0, 3, 10]),               // Minor 7th
     ("m7", &[0, 3, 7, 10]),            // Minor 7th
+    ("m6", &[0, 3, 8]),                // Minor 6th
+    ("m6", &[0, 3, 7, 8]),             // Minor 6th
+    ("m9", &[0, 3, 10, 14]),           // Minor 9th
+    ("m9", &[0, 3, 7, 10, 14]),        // Minor 9th
     ("dim", &[0, 3, 6]),               // Diminished
     ("dim7", &[0, 3, 6, 9]),           // Diminished 7th
     ("m7b5", &[0, 3, 6, 10]),          // Half-diminished 7th
     ("5", &[0, 7]),                    // Power chord
     ("aug", &[0, 4, 8]),               // Augmented
     ("aug7", &[0, 4, 8, 10]),          // Augmented 7th
+    ("maj7#5", &[0, 4, 8, 11]),        // Augmented Major 7th
 ];
 
 fn chord(notes: &Vec<u8>) -> Option<String> {
@@ -90,7 +95,7 @@ fn main() {
             notes_on.sort();
             println!(
                 "Currently playing: {}",
-                chord(&notes_on).unwrap_or(String::from("???"))
+                chord(&notes_on).unwrap_or("???".to_string())
             );
         }
     };
