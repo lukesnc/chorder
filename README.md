@@ -1,6 +1,6 @@
 # chorder
 
-See what chord you're playing on your MIDI device in real time (amazing!)
+See what chord you're playing on your MIDI controller in real time (amazing!)
 
 ## Background
 
@@ -18,7 +18,7 @@ Couldn't tell you.
 
 ## Requirements
 
-Since I'm building for a Windows host you will need MinGW:
+Since I'm building for Windows, you will need MinGW:
 
 ```bash
 sudo pacman -S mingw-w64-gcc
