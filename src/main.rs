@@ -3,8 +3,8 @@ use std::time::Duration;
 use console::Term;
 use midir::MidiInput;
 
-const NOTE_ON: u8 = 144;
-const NOTE_OFF: u8 = 128;
+const MIDI_NOTE_ON: u8 = 144;
+const MIDI_NOTE_OFF: u8 = 128;
 
 const CHORDS: [(&str, &[u8]); 24] = [
     ("M", &[0, 4, 7]),                 // Major
@@ -75,33 +75,29 @@ fn main() {
 
     let mut notes_on: Vec<u8> = Vec::new();
 
+    let handle_event = move |_stamp: u64, msg: &[u8], _data: &mut ()| {
+        let msg_type = msg[0];
+        let midi_num = msg[1];
+        match msg_type {
+            MIDI_NOTE_ON => notes_on.push(midi_num),
+            MIDI_NOTE_OFF => notes_on.retain(|&e| e != midi_num),
+            _ => {}
+        }
+
+        if notes_on.len() > 1 {
+            term.clear_last_lines(1).unwrap();
+
+            notes_on.sort();
+            println!(
+                "Currently playing: {}",
+                chord(&notes_on).unwrap_or(String::from("???"))
+            );
+        }
+    };
+
     let _conn = midi_in
-        .connect(
-            dev,
-            "midir-read-input",
-            move |_, msg, _| {
-                let msg_type = msg[0];
-                let midi_num = msg[1];
-                match msg_type {
-                    NOTE_ON => notes_on.push(midi_num),
-                    NOTE_OFF => notes_on.retain(|&e| e != midi_num),
-                    _ => {}
-                }
-
-                if notes_on.len() > 1 {
-                    term.clear_last_lines(1).unwrap();
-
-                    notes_on.sort();
-                    println!(
-                        "Currently playing: {}",
-                        chord(&notes_on).unwrap_or(String::from("???"))
-                    );
-                }
-            },
-            (),
-        )
+        .connect(dev, "midir-read-input", handle_event, ())
         .expect(format!("could not connect to {}", dev_name).as_str());
-
     println!("Successfully connected to {}\n", dev_name);
 
     let poll_rate = Duration::from_millis(100);
