@@ -24,6 +24,12 @@ Since I'm building for Windows, you will need MinGW:
 sudo pacman -S mingw-w64-gcc
 ```
 
+Then add the build target with rustup:
+
+```bash
+rustup target add x86_64-pc-windows-gnu
+```
+
 ## Usage
 
 Clone this repository then:
